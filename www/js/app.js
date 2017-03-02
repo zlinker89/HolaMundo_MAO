@@ -1,5 +1,5 @@
 
-var app = angular.module('starter', ['ionic', 'ngCordova'])
+var app = angular.module('starter', ['ionic', 'ngCordova', 'angularSoap'])
 
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
