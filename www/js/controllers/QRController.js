@@ -1,10 +1,8 @@
 app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap) {
-     $soap.post("http://192.168.1.5:8080/WebApp/Sumar$_$1".split("$_$")[0], "GetProductos", { op: "http://192.168.1.5:8080/WebApp/Sumar$_$1".split("$_$")[1] }).then(function (d) {
-                            console.log(d);
-                            $scope.data = d;
-                        },
-                            function (e) { console.log(e) });
-    $scope.QR_Code = true;
+    $scope.total = null;
+    $scope.data = [];
+    $scope.QR_Code = false;
+    
     $scope.Escanear = function () {
         try {
             // $cordovaBarcodeScanner.scan().then(function(imageData) {
@@ -23,10 +21,20 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap) {
                             "Cancelled: " + result.cancelled);
                         try {
                             $soap.post(result.text.split("$_$")[0], "GetProductos", { op: result.text.split("$_$")[1] }).then(function (d) {
-                            console.log(d);
-                            $scope.data = d;
-                        },
-                            function (e) { console.log(e) });
+                                console.log(d);
+                                if (d) {
+                                    $scope.QR_Code = true;
+                                    $scope.data = d;
+                                    $soap.post(result.text.split("$_$")[0], "GetTotal", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
+                                        console.log(d);
+                                        $scope.total = d[0];
+                                    },
+                                        function (e) { console.log(e) });
+                                }else{
+                                    alert("Error: No se encontraron datos en esta mesa. Intente de nuevo.")   
+                                }
+                            },
+                                function (e) { console.log(e) });
                         } catch (error) {
                             alert(error);
                         }
@@ -56,4 +64,10 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap) {
             alert(error);
         }
     };
+
+    $scope.Reset = function () {
+        $scope.total = null;
+        $scope.data = [];
+        $scope.QR_Code = false;
+    }
 })

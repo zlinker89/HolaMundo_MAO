@@ -1,7 +1,6 @@
 /* Empty. Add your own CSS if you like */
 .QR{
     padding-top:50px;
-    text-align: center;
 }
 .QR_Page{
     background: url("../img/fondo.jpg");
@@ -12,6 +11,9 @@
 
 .QR .button{
     transform: translate(0px,28vh);
+}
+.QR #btn_QR{
+    text-align: center;
 }
 .QR .button i{
    font-size: 200px;
