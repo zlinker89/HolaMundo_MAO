@@ -3,22 +3,19 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+  //   .state('tab', {
+  //   url: '/tab',
+  //   abstract: true,
+  //   templateUrl: 'templates/tabs.html'
+  // })
 
   // Each tab has its own nav history stack:
 
-  .state('tab.qr', {
+  .state('qr', {
     url: '/qr',
-    views: {
-      'QR': {
-        templateUrl: 'templates/qr.html',
-        controller: 'QRCtrl'
-      }
-    }
+    templateUrl: 'templates/qr.html',
+    controller: 'QRCtrl'
+    
   })
 
   .state('tab.chats', {
@@ -51,6 +48,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/qr');
+  $urlRouterProvider.otherwise('/qr');
 
 });

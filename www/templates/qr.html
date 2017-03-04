@@ -1,6 +1,9 @@
-<ion-view view-title="Escanear codigo qr">
-  <ion-content class="padding">
-    <button class="button button-block button-balanced" on-touch="Escanear()">Escanear</button>
-    <div>{{data}}</div>
+<ion-view class="QR_Page">
+  <ion-content class="padding QR">
+    <button class="button btn-qr" on-touch="Escanear()">
+      
+      <i class="fa fa-qrcode"></i>
+    </button>
+    <div style="color: white">{{data}}</div>
   </ion-content>
 </ion-view>

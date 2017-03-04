@@ -1,1 +1,22 @@
 /* Empty. Add your own CSS if you like */
+.QR{
+    padding-top:50px;
+    text-align: center;
+}
+.QR_Page{
+    background: url("../img/fondo.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.QR .button{
+    transform: translate(0px,28vh);
+}
+.QR .button i{
+   font-size: 200px;
+}
+.btn-qr{
+    background: rgba(0,0,0,0.9);
+    color: white;
+}

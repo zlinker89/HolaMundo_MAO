@@ -215,6 +215,7 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req) 
 {
 	var o = null;
+	console.log(req.responseXML);
 	var nd = SOAPClient._getElementsByTagName(req.responseXML, method + "Result");
 	if(nd.length == 0)
 		nd = SOAPClient._getElementsByTagName(req.responseXML, "return");	// PHP web Service?
@@ -229,7 +230,16 @@ SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req)
 		}
 	}
 	else
-		o = SOAPClient._soapresult2object(nd[0], wsdl);
+	o = [];
+	for (var i in nd) {
+		console.log(nd[i]);
+		var res = SOAPClient._soapresult2object(nd[i], wsdl);
+		if(res){
+			o.push(res);
+		}
+		
+	}	
+		
 	if(callback)
 		callback(o, req.responseXML);
 	if(!async)
@@ -242,6 +252,7 @@ SOAPClient._soapresult2object = function(node, wsdl)
 }
 SOAPClient._node2object = function(node, wsdlTypes)
 {
+	console.log(node);
 	// null node
 	if(node == null)
 		return null;
@@ -249,19 +260,22 @@ SOAPClient._node2object = function(node, wsdlTypes)
 	if(node.nodeType == 3 || node.nodeType == 4)
 		return SOAPClient._extractValue(node, wsdlTypes);
 	// leaf node
-	if (node.childNodes.length == 1 && (node.childNodes[0].nodeType == 3 || node.childNodes[0].nodeType == 4))
+	if(node.childNodes != undefined){
+		if (node.childNodes.length == 1 && (node.childNodes[0].nodeType == 3 || node.childNodes[0].nodeType == 4))
 		return SOAPClient._node2object(node.childNodes[0], wsdlTypes);
+	}
 	var isarray = SOAPClient._getTypeFromWsdl(node.nodeName, wsdlTypes).toLowerCase().indexOf("arrayof") != -1;
 	// object node
 	if(!isarray)
 	{
 		var obj = null;
-		if(node.hasChildNodes())
+		if(node.childNodes !== undefined){
 			obj = new Object();
-		for(var i = 0; i < node.childNodes.length; i++)
-		{
-			var p = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
-			obj[node.childNodes[i].nodeName] = p;
+			for(var i = 0; i < node.childNodes.length; i++)
+			{
+				var p = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
+				obj[node.childNodes[i].nodeName] = p;
+			}
 		}
 		return obj;
 	}
