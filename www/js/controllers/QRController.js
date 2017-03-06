@@ -1,50 +1,69 @@
-app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap) {
+app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionicLoading, $cordovaNetwork) {
     $scope.total = null;
     $scope.data = [];
     $scope.QR_Code = false;
-    
+    // $soap.post('http://192.168.1.12:8080/WebApp/Sumar$_$1'.split("$_$")[0], "GetProductos", { op: 'http://192.168.1.12:8080/WebApp/Sumar$_$1'.split("$_$")[1] }).then(function (d) {
+    //                             console.log(d);
+    //                             if (d.length > 0) {
+    //                                 $scope.QR_Code = true;
+    //                                 $scope.data = d;
+    //                                 $ionicLoading.hide();
+    //                                 $soap.post('http://192.168.1.12:8080/WebApp/Sumar$_$1'.split("$_$")[0], "GetTotal", { MesaId: 'http://192.168.1.12:8080/WebApp/Sumar$_$1'.split("$_$")[1] }).then(function (d) {
+    //                                     console.log(d);
+    //                                     $scope.total = d[0];
+    //                                 },
+    //                                     function (e) { console.log(e) });
+    //                             }else{
+    //                                 $ionicLoading.hide();
+    //                                 alert("Error: No se encontraron datos en esta mesa. Intente de nuevo.")   
+    //                             }
+    //                         },
+    //                             function (e) { console.log(e) });
     $scope.Escanear = function () {
         try {
-            // $cordovaBarcodeScanner.scan().then(function(imageData) {
-            //     alert(imageData.text);
-            //     console.log("Barcode Format -> " + imageData.format);
-            //     console.log("Cancelled -> " + imageData.cancelled);
-            // }, function(error) {
-            //     console.log("An error happened -> " + error);
-            // });
+
             cordova.plugins.barcodeScanner.scan(
                 function (result) {
                     if (!result.cancelled) {
-                        alert("We got a barcode\n" +
-                            "Result: " + result.text + "\n" +
-                            "Format: " + result.format + "\n" +
-                            "Cancelled: " + result.cancelled);
-                        try {
-                            $soap.post(result.text.split("$_$")[0], "GetProductos", { op: result.text.split("$_$")[1] }).then(function (d) {
-                                console.log(d);
-                                if (d) {
-                                    $scope.QR_Code = true;
-                                    $scope.data = d;
-                                    $soap.post(result.text.split("$_$")[0], "GetTotal", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
-                                        console.log(d);
-                                        $scope.total = d[0];
-                                    },
-                                        function (e) { console.log(e) });
-                                }else{
-                                    alert("Error: No se encontraron datos en esta mesa. Intente de nuevo.")   
-                                }
-                            },
-                                function (e) { console.log(e) });
-                        } catch (error) {
-                            alert(error);
+                        if ($cordovaNetwork.isOnline()) {
+                            $ionicLoading.show({
+                                template: '<ion-spinner class="spinner-energized"></ion-spinner>'
+                            });
+                            try {
+                                $soap.post(result.text.split("$_$")[0], "GetProductos", { op: result.text.split("$_$")[1] }).then(function (d) {
+                                    console.log(d);
+                                    if (d.length > 0) {
+                                        $scope.QR_Code = true;
+                                        $scope.data = d;
+                                        $ionicLoading.hide();
+                                        $soap.post(result.text.split("$_$")[0], "GetTotal", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
+                                            console.log(d);
+                                            $scope.total = d[0];
+                                        },
+                                            function (e) { alert(e); });
+                                    } else {
+                                        $ionicLoading.hide();
+                                        alert("Error: No se encontraron datos en esta mesa. Intente de nuevo.")
+                                    }
+                                },
+                                    function (e) { alert(e); });
+                            } catch (error) {
+                                $ionicLoading.hide();
+                                alert(error);
+                            }
+                        } else {
+                            alert("Compruebe su conexión.");
                         }
+
                     } else {
+                        $ionicLoading.hide();
                         alert("Cancelado por el usuario");
                     }
 
 
                 },
                 function (error) {
+                    $ionicLoading.hide();
                     alert("Scanning failed: " + error);
                 },
                 {
@@ -61,6 +80,7 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap) {
                 }
             );
         } catch (error) {
+            $ionicLoading.hide();
             alert(error);
         }
     };

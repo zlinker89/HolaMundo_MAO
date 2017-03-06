@@ -164,7 +164,8 @@ SOAPClient._onLoadWsdl = function(url, method, parameters, async, callback, req)
 SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback, wsdl)
 {
 	// get namespace
-	var ns = (wsdl.documentElement.attributes["targetNamespace"] + "" == "undefined") ? wsdl.documentElement.attributes.getNamedItem("targetNamespace").nodeValue : wsdl.documentElement.attributes["targetNamespace"].value;
+	if (wsdl) {
+		var ns = (wsdl.documentElement.attributes["targetNamespace"] + "" == "undefined") ? wsdl.documentElement.attributes.getNamedItem("targetNamespace").nodeValue : wsdl.documentElement.attributes["targetNamespace"].value;
 	// build SOAP request
 	// var sr = 
 	// 			"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -208,13 +209,18 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 	}
 	console.log(sr);
 	xmlHttp.send(sr);
-	if (!async)
+	if (!async){
 		return SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
+	}
+	}else{
+		alert("Compruebe su conexión.");
+	}
+	
 }
 
 SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req) 
 {
-	var o = null;
+	var o = [];
 	console.log(req.responseXML);
 	var nd = SOAPClient._getElementsByTagName(req.responseXML, method + "Result");
 	if(nd.length == 0)
