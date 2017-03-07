@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.maoapp646564" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>MaoApp</name>
   <description>
-        An Ionic Framework and Cordova project.
+        Un aplicación para consultar estado de cuenta por medio de un codigo QR.
     </description>
-  <author email="you@example.com" href="http://example.com/">
-      Your Name Here
+  <author email="ospi89@hotmail.com" href="http://franklin-ospino.tk/">
+      Franklin Ospino
     </author>
   <content src="index.html"/>
   <access origin="*"/>
