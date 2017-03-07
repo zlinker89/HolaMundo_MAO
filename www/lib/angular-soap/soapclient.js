@@ -20,7 +20,6 @@ function SOAPClientParameters()
 		var xml = "";
 		for(var p in _pl)
 		{
-			console.log(_pl[p]);
 			switch(typeof(_pl[p])) 
 			{
                 case "string":
@@ -142,6 +141,7 @@ SOAPClient._loadWsdl = function(url, method, parameters, async, callback)
 		xmlHttp.setRequestHeader("Authorization", "Basic " + SOAPClient._toBase64(SOAPClient.username + ":" + SOAPClient.password));
 	}
 	else
+		// xmlHttp.open("GET", url + "?wsdl", async);
 		xmlHttp.open("GET", url + "?wsdl", async);
 	if(async) 
 	{
@@ -177,7 +177,33 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 	// 			"<" + method + " xmlns=\"" + ns + "\">" +
 	// 			parameters.toXml() +
 	// 			"</" + method + "></soap:Body></soap:Envelope>";
-	var sr = 
+	// FOR JAVA WS
+	// var sr = 
+	// 			"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+	// 			"<soap:Envelope " +
+	// 			"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+	// 			"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+	// 			"xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+	// 			"<soap:Body>" +
+	// 			"<ns2:" + method + " xmlns:ns2=\"" + ns + "\">" +
+	// 			parameters.toXml() +
+	// 			"</ns2:" + method + "></soap:Body></soap:Envelope>";
+	var sr = null;
+	if(url.split(".asmx")[1] != undefined){
+		// .NET
+		sr = 
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+				"<soap:Envelope " +
+				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+				"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+				"xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+				"<soap:Body>" +
+				"<" + method + " xmlns=\"" + ns + "\">" +
+				parameters.toXml() +
+				"</" + method + "></soap:Body></soap:Envelope>";
+	}else{
+		// JAVA WEBService
+		sr = 
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
 				"<soap:Envelope " +
 				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
@@ -187,6 +213,8 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 				"<ns2:" + method + " xmlns:ns2=\"" + ns + "\">" +
 				parameters.toXml() +
 				"</ns2:" + method + "></soap:Body></soap:Envelope>";
+	}
+
 	// send request
 	var xmlHttp = SOAPClient._getXmlHttp();
 	if (SOAPClient.username && SOAPClient.password){
@@ -197,7 +225,7 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 	else
 		xmlHttp.open("POST", url, async);
 	var soapaction = ((ns.lastIndexOf("/") != ns.length - 1) ? ns + "/" : ns) + encodeURIComponent(method);
-	xmlHttp.setRequestHeader("SOAPAction", "\"" + soapaction + "\"");
+	// xmlHttp.setRequestHeader("SOAPAction", "\"" + soapaction + "\"");
 	xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
 	if(async) 
 	{
@@ -213,7 +241,7 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 		return SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
 	}
 	}else{
-		alert("Compruebe su conexión.");
+		throw "QR invalido!";
 	}
 	
 }
@@ -238,7 +266,6 @@ SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req)
 	else
 	o = [];
 	for (var i in nd) {
-		console.log(nd[i]);
 		var res = SOAPClient._soapresult2object(nd[i], wsdl);
 		if(res){
 			o.push(res);
@@ -258,7 +285,6 @@ SOAPClient._soapresult2object = function(node, wsdl)
 }
 SOAPClient._node2object = function(node, wsdlTypes)
 {
-	console.log(node);
 	// null node
 	if(node == null)
 		return null;

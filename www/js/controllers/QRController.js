@@ -4,6 +4,7 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
     $scope.QR_Code = false;
     $scope.Intervalo = null;
 
+    
     function ShowMensaje(titulo, mensaje) {
         $ionicPopup.alert({
             template: mensaje,
@@ -13,11 +14,15 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
     }
 
     function SOAP(result) {
-        $soap.post(result.text.split("$_$")[0], "GetProductos", { op: result.text.split("$_$")[1] }).then(function (d) {
+        $soap.post(result.text.split("$_$")[0], "GetProductos", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
             console.log(d);
             if (d.length > 0) {
                 $scope.QR_Code = true;
-                $scope.data = d;
+                if(d[0].length > 1){
+                    $scope.data = d[0];
+                }else{
+                    $scope.data = d;
+                }
                 $ionicLoading.hide();
                 $soap.post(result.text.split("$_$")[0], "GetTotal", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
                     console.log(d);
@@ -50,6 +55,7 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
             }
         } else {
             $scope.Reset();
+            $ionicLoading.hide();
             ShowMensaje("Error!","Compruebe su conexión.");
         }
     }
