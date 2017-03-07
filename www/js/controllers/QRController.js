@@ -1,10 +1,16 @@
-app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionicLoading, $cordovaNetwork) {
+app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionicLoading, $cordovaNetwork, $ionicPopup) {
     $scope.total = null;
     $scope.data = [];
     $scope.QR_Code = false;
     $scope.Intervalo = null;
 
-
+    function ShowMensaje(titulo, mensaje) {
+        $ionicPopup.alert({
+            template: mensaje,
+            title: titulo,
+            cssClass: 'popPUP'
+        });
+    }
 
     function SOAP(result) {
         $soap.post(result.text.split("$_$")[0], "GetProductos", { op: result.text.split("$_$")[1] }).then(function (d) {
@@ -17,15 +23,15 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
                     console.log(d);
                     $scope.total = d[0];
                 },
-                    function (e) { alert(e); });
+                    function (e) { ShowMensaje("Error!",e); });
             } else {
                 $ionicLoading.hide();
                 $scope.Reset();
-                alert("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
+                ShowMensaje("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
 
             }
         },
-            function (e) { alert(e); });
+            function (e) { ShowMensaje("Error!",e); });
         $scope.$apply();
     }
 
@@ -38,13 +44,13 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
                 SOAP(data);
             } catch (error) {
                 $ionicLoading.hide();
-                alert(error);
+                ShowMensaje(error);
                 $scope.Reset();
 
             }
         } else {
             $scope.Reset();
-            alert("Compruebe su conexión.");
+            ShowMensaje("Error!","Compruebe su conexión.");
         }
     }
 
@@ -54,7 +60,7 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
             ScanQR();
         } catch (error) {
             $ionicLoading.hide();
-            alert(error);
+            ShowMensaje("Error!",error);
         }
     };
 
@@ -75,12 +81,12 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
                     LogicaConsulta(result);
                 } else {
                     $ionicLoading.hide();
-                    alert("Cancelado por el usuario");
+                    ShowMensaje("Notificación:","Cancelado por el usuario");
                 }
             },
             function (error) {
                 $ionicLoading.hide();
-                alert("Scanning failed: " + error);
+                ShowMensaje("Error!","Scanning failed: " + error);
             },
             {
                 preferFrontCamera: false, // iOS and Android

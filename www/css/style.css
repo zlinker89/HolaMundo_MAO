@@ -22,3 +22,31 @@
     background: rgba(0,0,0,0.9);
     color: white;
 }
+
+.popPUP .popup {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.popPUP .popup .button{
+    background: rgba(150, 0, 0, 0.8);
+    color: white;
+}
+.popPUP .popup-title {
+    color: #AAAAAA;
+    font-weight: bold;
+}
+
+.popPUP .popup-body {
+    color: white;
+    overflow: inherit !important;
+    text-align: center;
+    position: relative;
+}
+
+.popPUP .btncode {
+    position: absolute;
+    right: -22px;
+    bottom: -20px;
+    width: 45px;
+    cursor: pointer;
+}
