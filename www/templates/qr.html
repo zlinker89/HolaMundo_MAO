@@ -26,20 +26,24 @@
         <ion-item-group>
           <ion-item style="background: rgba(0,0,0,0.8);color: white;font-size: 1.1em;">
             <div>
-              <div style="width: 80%; float:left"><strong>Productos</strong></div>
-              <div style="width: 20%; float:left; text-align: center;"><strong>Cantidad</strong></div>
+              <div style="width: 50%; float:left"><strong>Productos</strong></div>
+              <div style="width: 15%; float:left; text-align: center"><strong>Cant.</strong></div>
+              <!--<div style="width: 25%; float:left; text-align: center"><strong>V. Unidad</strong></div>-->
+              <div style="width: 35%; float:left; text-align: center"><strong>V. Total</strong></div>
             </div>
           </ion-item>
-          <ion-item ng-repeat="d in data" style="background:rgba(0,0,0,0.8);color: white;">
+          <ion-item ng-repeat="d in data.Productos" style="background:rgba(0,0,0,0.8);color: white;">
             <div>
-              <div style="width: 80%; float:left">{{d.Nombre}}</div>
-              <div style="width: 20%; float:left; text-align: center;">{{d.Cantidad}}</div>
+              <div style="width: 50%; float:left">{{d.Nombre}}</div>
+              <div style="width: 15%; float:left; text-align: center">{{d.Cantidad}}</div>
+              <!--<div style="width: 25%; float:left; text-align: center">{{d.PrecioUnidad | currency : "$" : 0}}</div>-->
+              <div style="width: 35%; float:left; text-align: center">{{d.PrecioTotal | currency : "$" : 0}}</div>
             </div>
           </ion-item>
           <ion-item style="background:rgba(155,0,0,0.8);color: white;">
             <div>
               <div style="width: 60%; float:left"><strong>Total:</strong></div>
-              <div style="width: 40%; float:left; text-align: center;">{{total | currency}}</div>
+              <div style="width: 40%; float:left; text-align: center;">{{data.Total | currency}}</div>
             </div>
           </ion-item>
         </ion-item-group>

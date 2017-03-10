@@ -3,8 +3,29 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
     $scope.data = [];
     $scope.QR_Code = false;
     $scope.Intervalo = null;
+    // $soap.post("http://192.168.1.13:81/prueba.asmx$_$1".split("$_$")[0], "GetProductos", { MesaId: "http://192.168.1.13:81/prueba.asmx$_$1".split("$_$")[1] }).then(function (d) {
 
+    //         console.log(d);
+    //         if (d[0].length != 0) {
+    //             $scope.QR_Code = true;
+    //             if (d[0].Productos) {
+    //                 console.log(d);
 
+    //                 $scope.data = d[0];
+    //             } else if (d.Productos) {
+    //                 $scope.data = d;
+    //             } else {
+    //                 $scope.Reset();
+    //                 ShowMensaje("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
+    //             }
+    //         } else {
+    //             $scope.Reset();
+    //             ShowMensaje("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
+    //         }
+    //         $ionicLoading.hide();
+
+    //     },
+    //         function (e) { ShowMensaje("Error!", e); });
     function ShowMensaje(titulo, mensaje) {
         $ionicPopup.alert({
             template: mensaje,
@@ -15,25 +36,26 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
 
     function SOAP(result) {
         $soap.post(result.text.split("$_$")[0], "GetProductos", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
+
             console.log(d);
             if (d[0].length != 0) {
                 $scope.QR_Code = true;
-                if (d[0].length > 1) {
-                    $scope.data = d[0];
-                } else {
-                    $scope.data = d;
-                }
-                $ionicLoading.hide();
-                $soap.post(result.text.split("$_$")[0], "GetTotal", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
+                if (d[0].Productos) {
                     console.log(d);
-                    $scope.total = d[0];
-                },
-                    function (e) { ShowMensaje("Error!", e); });
+
+                    $scope.data = d[0];
+                } else if (d.Productos) {
+                    $scope.data = d;
+                } else {
+                    $scope.Reset();
+                    ShowMensaje("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
+                }
             } else {
-                $ionicLoading.hide();
                 $scope.Reset();
                 ShowMensaje("Error: No se encontraron datos en esta mesa. Intente de nuevo.");
             }
+            $ionicLoading.hide();
+
         },
             function (e) { ShowMensaje("Error!", e); });
         $scope.$apply();
