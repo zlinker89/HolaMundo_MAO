@@ -3,15 +3,15 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
     $scope.data = [];
     $scope.QR_Code = false;
     $scope.Intervalo = null;
-    // $soap.post("http://192.168.1.13:81/prueba.asmx$_$1".split("$_$")[0], "GetProductos", { MesaId: "http://192.168.1.13:81/prueba.asmx$_$1".split("$_$")[1] }).then(function (d) {
+    // $soap.post("http://192.168.100.9:81/POSWebService.asmx$_$10".split("$_$")[0], "GetProductos2", { MesaId: "http://192.168.100.9:81/POSWebService.asmx$_$10".split("$_$")[1] }).then(function (d) {
 
-    //         console.log(d);
+    //         console.log(d[0]["Mesa_" + "http://192.168.100.9:81/POSWebService.asmx$_$10".split("$_$")[1]]);
     //         if (d[0].length != 0) {
     //             $scope.QR_Code = true;
-    //             if (d[0].Productos) {
+    //             if (d[0]["Mesa_" + "http://192.168.100.9:81/POSWebService.asmx$_$10".split("$_$")[1]].Productos.length !== 0) {
     //                 console.log(d);
 
-    //                 $scope.data = d[0];
+    //                 $scope.data = d[0]["Mesa_" + "http://192.168.100.9:81/POSWebService.asmx$_$10".split("$_$")[1]];
     //             } else if (d.Productos) {
     //                 $scope.data = d;
     //             } else {
@@ -35,15 +35,15 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
     }
 
     function SOAP(result) {
-        $soap.post(result.text.split("$_$")[0], "GetProductos", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
+        $soap.post(result.text.split("$_$")[0], "GetProductos2", { MesaId: result.text.split("$_$")[1] }).then(function (d) {
 
-            console.log(d);
+            console.log(d[0]["Mesa_" + result.text.split("$_$")[1]]);
             if (d[0].length != 0) {
                 $scope.QR_Code = true;
-                if (d[0].Productos) {
+                if (d[0]["Mesa_" + result.text.split("$_$")[1]].Productos.length !== 0) {
                     console.log(d);
 
-                    $scope.data = d[0];
+                    $scope.data = d[0]["Mesa_" + result.text.split("$_$")[1]];
                 } else if (d.Productos) {
                     $scope.data = d;
                 } else {
@@ -83,7 +83,6 @@ app.controller('QRCtrl', function ($scope, $cordovaBarcodeScanner, $soap, $ionic
 
     $scope.Escanear = function () {
         try {
-
             ScanQR();
         } catch (error) {
             $ionicLoading.hide();

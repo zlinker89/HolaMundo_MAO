@@ -267,6 +267,7 @@ SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req)
 	o = [];
 	for (var i in nd) {
 		var res = SOAPClient._soapresult2object(nd[i], wsdl);
+		console.log(res);
 		if(res){
 			o.push(res);
 		}
@@ -293,19 +294,23 @@ SOAPClient._node2object = function(node, wsdlTypes)
 		return SOAPClient._extractValue(node, wsdlTypes);
 	// leaf node
 	if(node.childNodes != undefined){
-		if (node.childNodes.length == 1 && (node.childNodes[0].nodeType == 3 || node.childNodes[0].nodeType == 4))
-		return SOAPClient._node2object(node.childNodes[0], wsdlTypes);
+		if (node.childNodes.length == 1 && (node.childNodes[0].nodeType == 3 || node.childNodes[0].nodeType == 4)){
+			return SOAPClient._node2object(node.childNodes[0], wsdlTypes);
+		}
 	}
 	var isarray = SOAPClient._getTypeFromWsdl(node.nodeName, wsdlTypes).toLowerCase().indexOf("arrayof") != -1;
 	// object node
 	if(!isarray)
 	{
 		var obj = null;
+		var lst = [];
+		console.log(node.childNodes !== undefined);
 		if(node.childNodes !== undefined){
-			obj = new Object();
+			obj = [];
 			for(var i = 0; i < node.childNodes.length; i++)
 			{
 				var p = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
+				obj.push(p);
 				obj[node.childNodes[i].nodeName] = p;
 			}
 		}
